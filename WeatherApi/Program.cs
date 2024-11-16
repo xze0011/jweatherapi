@@ -1,9 +1,26 @@
+using WeatherApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Get OpenWeatherMap tokens in.
+builder.Services.Configure<OpenWeatherMapConfig>(builder.Configuration.GetSection("OpenWeatherMap"));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Configure CORS
+builder.Services.AddCors(options =>
+{
+    var allowedCorsOrigin = builder.Configuration.GetValue<string>("AllowedCorsOrigins") ?? "http://localhost:3000";
+    options.AddPolicy("AllowSpecificOrigin", policy =>
+    {
+        policy.WithOrigins(allowedCorsOrigin)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
