@@ -5,6 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Get OpenWeatherMap tokens in.
 builder.Services.Configure<OpenWeatherMapConfig>(builder.Configuration.GetSection("OpenWeatherMap"));
 
+// Get RateLimitConfig in, which contains ClientKeys and TokenCapacity.
+builder.Services.Configure<RateLimitConfig>(builder.Configuration.GetSection("RateLimitConfig"));
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
