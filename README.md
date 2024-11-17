@@ -62,11 +62,14 @@ dotnet build
 dotnet run
 ```
 
-### Build with Docker
+### Build with Docker (Recommended !!!!)
+Using Docker is highly recommended, especially if you’re running both the frontend and backend on the same machine. Docker allows you to set a consistent environment and port number, making it easier to avoid conflicts.
+
 ```sh
 docker build -t weatherapi .
 docker run -p 5000:5000 weatherapi
 ```
+
 
 ## How to Run Tests
 
