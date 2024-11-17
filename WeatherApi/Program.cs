@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using WeatherApi.Interfaces;
 using WeatherApi.Models;
 using WeatherApi.Services;
@@ -10,10 +11,18 @@ builder.Services.Configure<OpenWeatherMapConfig>(builder.Configuration.GetSectio
 // Get RateLimitConfig in, which contains ClientKeys and TokenCapacity.
 builder.Services.Configure<RateLimitConfig>(builder.Configuration.GetSection("RateLimitConfig"));
 
+// Initialize the Bucket & Tokens
+builder.Services.AddSingleton(provider =>
+{
+    var config = provider.GetRequiredService<IOptions<RateLimitConfig>>().Value;
+    return new TokenBucket(config.ClientKeys, config.TokenCapacity);
+});
+
+// Add services to the container.
+builder.Services.AddSingleton<IRateLimitService, RateLimitService>();
 builder.Services.AddTransient<IWeatherService, WeatherService>();
 builder.Services.AddTransient<ILocationValidationService, LocationValidationService>();
 
-// Add services to the container.
 // configuring Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WeatherApi.Interfaces;
-using WeatherApi.Services;
 
 namespace WeatherApi.Controllers
 {
@@ -9,15 +8,18 @@ namespace WeatherApi.Controllers
     public class WeatherController : ControllerBase
     {
         private readonly IWeatherService _weatherService;
+        private readonly IRateLimitService _rateLimitService;
         private readonly ILocationValidationService _locationValidationService;
         private readonly ILogger<WeatherController> _logger;
 
         public WeatherController(
             IWeatherService weatherService,
+            IRateLimitService rateLimitService,
             ILocationValidationService locationValidationService,
             ILogger<WeatherController> logger)
         {
             _weatherService = weatherService;
+            _rateLimitService = rateLimitService;
             _locationValidationService = locationValidationService;
             _logger = logger;
         }
@@ -32,6 +34,13 @@ namespace WeatherApi.Controllers
             {
                 _logger.LogWarning("Location validation failed for {City}, {Country}: {ErrorMessage}", city, country, errorMessage);
                 return BadRequest(new { error = errorMessage });
+            }
+
+            // Check rate limit
+            if (!_rateLimitService.TryConsumeToken())
+            {
+                _logger.LogWarning("Rate limit exceeded for weather request");
+                return StatusCode(429, new { error = "Rate limit exceeded. Please try again later." });
             }
 
             // Fetch weather data
