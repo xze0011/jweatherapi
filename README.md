@@ -1,6 +1,4 @@
-# Weather Finder API
-
-
+![Weather Finder API](Weather_Finder.png)
 
 ## Features
 
@@ -39,11 +37,11 @@ Before running the application, replace the placeholder API keys in `appsettings
     }
     ```
 
-3. **Note**: Avoid committing sensitive keys directly to source control. In production environments, consider using environment variables or a secrets manager (e.g., Azure Key Vault) to securely store API keys.
+3. **Note**: Avoid committing sensitive keys directly to source control. For production environments, consider using `appsettings.Production.json`, setting environment variables in the Dockerfile, or securely managing API keys with a secrets manager (e.g., Azure Key Vault).
 
 ### Step 2: Running in Visual Studio
-1. Open the solution file (`WeatherFinderAPI.sln`) in Visual Studio.
-2. Select the **WeatherFinderAPI** project as the startup project.
+1. Open the solution file (`WeatherApi.sln`) in Visual Studio.
+2. Select the **WeatherApi** project as the startup project.
 3. Press **F5** or click **Start Debugging** to build and run the application.
 
 ### Step 3: Running from Command Line
@@ -52,7 +50,7 @@ If you prefer to use the command line, you can follow these steps:
 
 ```sh
 # Navigate to the project directory
-cd WeatherFinderAPI
+cd WeatherApi
 
 # Restore dependencies
 dotnet restore
@@ -75,7 +73,7 @@ docker run -p 5000:5000 weatherapi
 Once the API is successfully configured and running, you can proceed to run the test suite to verify that all functionalities are working correctly.
 
 ### Running Tests in Visual Studio
-1. Open the solution file (`WeatherFinderAPI.sln`) in Visual Studio.
+1. Open the solution file (`WeatherApi.sln`) in Visual Studio.
 2. Go to **Test** > **Test Explorer** in the menu to open the Test Explorer.
 3. In the Test Explorer, click **Run All** to execute all tests in the project.
 
