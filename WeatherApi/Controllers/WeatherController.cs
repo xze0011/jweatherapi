@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WeatherApi.Interfaces;
+using WeatherApi.Services;
 
 namespace WeatherApi.Controllers
 {
@@ -7,15 +8,16 @@ namespace WeatherApi.Controllers
     [Route("api/[controller]")]
     public class WeatherController : ControllerBase
     {
-
+        private readonly IWeatherService _weatherService;
         private readonly ILocationValidationService _locationValidationService;
         private readonly ILogger<WeatherController> _logger;
 
         public WeatherController(
-
+            IWeatherService weatherService,
             ILocationValidationService locationValidationService,
             ILogger<WeatherController> logger)
         {
+            _weatherService = weatherService;
             _locationValidationService = locationValidationService;
             _logger = logger;
         }
@@ -32,7 +34,18 @@ namespace WeatherApi.Controllers
                 return BadRequest(new { error = errorMessage });
             }
 
-            return Ok();
+            // Fetch weather data
+            var weatherResponse = await _weatherService.GetWeatherDescriptionAsync(city, country);
+
+            // Handle potential errors from weather service
+            if (!string.IsNullOrEmpty(weatherResponse.ErrorMessage))
+            {
+                _logger.LogError("Error retrieving weather data: {ErrorMessage}", weatherResponse.ErrorMessage);
+                return StatusCode(500, new { error = weatherResponse.ErrorMessage });
+            }
+
+            _logger.LogInformation("Successfully retrieved weather for {City}, {Country}: {Description}", city, country, weatherResponse.Description);
+            return Ok(new { description = weatherResponse.Description });
         }
     }
 }
